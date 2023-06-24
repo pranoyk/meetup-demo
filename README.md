@@ -15,11 +15,15 @@ It is demo project for mircoservice based architecture in Go
 
 3. Starting server
     #### for service provider
-    ##### cd project_directory/service-provider
-    ##### go mod tidy
-    ##### go run main.go
+    ```sh
+    cd meetup-demo/service-provider
+    go mod tidy
+    go run main.go
+    ```
 
     #### for user
-    ##### cd project_directory/user
-    ##### go mod tidy
-    ##### go run main.go
+    ```sh
+    cd meetup-demo/user
+    go mod tidy
+    go run main.go
+    ```
