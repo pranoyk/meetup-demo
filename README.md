@@ -29,3 +29,5 @@ It is demo project for mircoservice based architecture in Go
     go mod tidy
     go run main.go
     ```
+    
+5. Use postman collection for APIs
