@@ -82,7 +82,7 @@ func main() {
 			return
 		}
 
-		c.JSON(http.StatusOK, serviceProvider)
+		c.JSON(http.StatusOK, "login successful")
 	})
 
 	router.POST("/serviceProviders/menu", func(c *gin.Context) {
@@ -94,7 +94,7 @@ func main() {
 		}
 
 		// Check if serviceProvider exists in MongoDB
-		serviceProvidersCollection := client.Database("serviceProvider-management").Collection("serviceProviders")
+		serviceProvidersCollection := client.Database("serviceProvider-management").Collection("menu")
 		filter := bson.M{"gravy": menu.Gravy}
 		err := serviceProvidersCollection.FindOne(context.Background(), filter).Decode(&menu)
 		if err != nil {
