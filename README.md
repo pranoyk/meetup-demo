@@ -13,7 +13,9 @@ It is demo project for mircoservice based architecture in Go
 2. Install MongoDB compass from their website(UI)
     ##### start server using default port
 
-3. Starting server
+3. Install go from https://go.dev/doc/install
+
+4. Starting server
     #### for service provider
     ```sh
     cd meetup-demo/service-provider
