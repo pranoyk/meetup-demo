@@ -1,0 +1,147 @@
+{
+	"info": {
+		"_postman_id": "9b91f384-4244-441e-8d74-0d863f9f2fbe",
+		"name": "Demo - Microservices using Go",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25596682"
+	},
+	"item": [
+		{
+			"name": "Add User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"John\",\r\n    \"email\":\"j@tiktac.com\",\r\n    \"password\":\"j\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"j@tiktac.com\",\r\n    \"password\":\"j\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add service provider",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"Johnathon\",\r\n    \"email\":\"j@tiktok.com\",\r\n    \"password\":\"j\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8088/serviceProviders",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"serviceProviders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login service provider",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"j@tiktok.com\",\r\n    \"password\":\"j\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8088/serviceProviders/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"serviceProviders",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add SP menu",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"gravy\":\"Paneer Tikka Lababdar\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8088/serviceProviders/menu",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"serviceProviders",
+						"menu"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
