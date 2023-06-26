@@ -80,6 +80,26 @@ func main() {
 		c.JSON(http.StatusOK, user)
 	})
 
+	router.POST("/users/validate", func(c *gin.Context) {
+		// Parse request body
+		var user User
+		if err := c.ShouldBindJSON(&user); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		// Check if user exists in MongoDB
+		usersCollection := client.Database("user-management").Collection("users")
+		filter := bson.M{"email": user.Email, "name": user.Name}
+		err := usersCollection.FindOne(context.Background(), filter).Decode(&user)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or name"})
+			return
+		}
+
+		c.JSON(http.StatusOK, user)
+	})
+
 	// Run Gin server
 	if err := router.Run(":8080"); err != nil {
 		log.Fatal(err)
