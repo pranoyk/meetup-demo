@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"log"
 	"net/http"
 
@@ -22,6 +24,11 @@ type ServiceProvider struct {
 type Menu struct {
 	ID    string `json:"id" bson:"_id"`
 	Gravy string `json:"gravy" bson:"gravy"`
+}
+
+type User struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
 }
 
 func main() {
@@ -103,6 +110,33 @@ func main() {
 		}
 
 		c.JSON(http.StatusOK, menu)
+	})
+
+	router.POST("/serviceProviders/validate", func(c *gin.Context) {
+		// Parse request body
+		var user User
+		if err := c.ShouldBindJSON(&user); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		var buf bytes.Buffer
+		err := json.NewEncoder(&buf).Encode(user)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		res, err := http.Post("http://localhost:8080/users/validate", "application/json", &buf)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		if res.StatusCode != http.StatusOK {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+			return
+		}
+
+		c.JSON(http.StatusOK, "valid user")
 	})
 
 	// Run Gin server
