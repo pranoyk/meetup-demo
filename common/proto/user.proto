@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package users;
+option go_package="github.com/pranoyk/meetup-demo/users";
+
+service User {
+    rpc Validate (ValidateRequest) returns (ValidateResponse) {}
+}
+
+message ValidateRequest {
+    string name = 1;
+    string email = 2;
+}
+
+message ValidateResponse {
+    bool valid = 1;
+}
