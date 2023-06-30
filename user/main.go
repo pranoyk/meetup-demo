@@ -3,12 +3,16 @@ package main
 import (
 	"context"
 	"log"
+	"net"
 	"net/http"
+
+	pb "github.com/pranoyk/meetup-demo/common/proto"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"google.golang.org/grpc"
 	"storj.io/common/uuid"
 )
 
@@ -27,6 +31,21 @@ func main() {
 		log.Fatal(err)
 	}
 	defer client.Disconnect(context.Background())
+
+	servAddress := ":50051"
+	lis, err := net.Listen("tcp", servAddress)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	s := grpc.NewServer()
+	userService := NewUserService(client)
+	pb.RegisterUserServer(s, userService)
+
+	go func() {
+		if err := s.Serve(lis); err != nil {
+			log.Fatalf("failed to serve: %v", err)
+		}
+	}()
 
 	// Set up Gin router
 	router := gin.Default()
@@ -74,26 +93,6 @@ func main() {
 		err := usersCollection.FindOne(context.Background(), filter).Decode(&user)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
-			return
-		}
-
-		c.JSON(http.StatusOK, user)
-	})
-
-	router.POST("/users/validate", func(c *gin.Context) {
-		// Parse request body
-		var user User
-		if err := c.ShouldBindJSON(&user); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		// Check if user exists in MongoDB
-		usersCollection := client.Database("user-management").Collection("users")
-		filter := bson.M{"email": user.Email, "name": user.Name}
-		err := usersCollection.FindOne(context.Background(), filter).Decode(&user)
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or name"})
 			return
 		}
 

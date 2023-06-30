@@ -1,16 +1,16 @@
 package main
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	pb "github.com/pranoyk/meetup-demo/common/proto"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"google.golang.org/grpc"
 	"storj.io/common/uuid"
 )
 
@@ -39,6 +39,14 @@ func main() {
 		log.Fatal(err)
 	}
 	defer client.Disconnect(context.Background())
+
+	cc, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer cc.Close()
+
+	uc := NewUserClient(cc)
 
 	// Set up Gin router
 	router := gin.Default()
@@ -120,23 +128,16 @@ func main() {
 			return
 		}
 
-		var buf bytes.Buffer
-		err := json.NewEncoder(&buf).Encode(user)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		res, err := http.Post("http://localhost:8080/users/validate", "application/json", &buf)
+		grpcRes, err := uc.Validate(context.Background(), &pb.ValidateRequest{Email: user.Email, Name: user.Name})
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		if res.StatusCode != http.StatusOK {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+		if !grpcRes.Valid {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or name"})
 			return
 		}
-
-		c.JSON(http.StatusOK, "valid user")
+		c.JSON(http.StatusOK, grpcRes)
 	})
 
 	// Run Gin server
