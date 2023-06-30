@@ -39,7 +39,7 @@ func main() {
 	}
 	s := grpc.NewServer()
 	userService := NewUserService(client)
-	pb.RegisterUserServer(s, userService)
+	pb.RegisterUsersServer(s, userService)
 
 	go func() {
 		if err := s.Serve(lis); err != nil {

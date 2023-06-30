@@ -140,6 +140,14 @@ func main() {
 		c.JSON(http.StatusOK, grpcRes)
 	})
 
+	router.GET("/serviceProviders/users", func(c *gin.Context) {
+		grpcRes, err := uc.GetUsers(context.Background(), &pb.Empty{})
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, grpcRes)
+	})
 	// Run Gin server
 	if err := router.Run(":8088"); err != nil {
 		log.Fatal(err)
