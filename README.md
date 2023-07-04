@@ -31,3 +31,27 @@ It is demo project for mircoservice based architecture in Go
     ```
     
 5. Use postman collection for APIs
+
+#### gRPC
+
+Install gRPC plugins
+
+```sh
+go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
+
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
+
+export PATH="$PATH:$(go env GOPATH)/bin"
+```
+
+Proto files are located under common folder
+
+Use the following command in order to generate proto files
+
+```sh
+cd common
+
+protoc --go_out=. --go_opt=paths=source_relative \
+    --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+    proto/user.proto
+```
